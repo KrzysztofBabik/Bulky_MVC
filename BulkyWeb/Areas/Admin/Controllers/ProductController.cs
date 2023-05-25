@@ -106,41 +106,40 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 return View(productVM);
             }
         }
-        public IActionResult Delete(int? id) 
+        
+
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll() 
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-
-            if (productFromDb == null) 
-            { 
-                return NotFound();
-            }
-            return View(productFromDb);
+            return Json(new {data = objProductList});
         }
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
+            var productToBeDeleted = _unitOfWork.Product.Get(u => u.Id == id);
+            if (productToBeDeleted == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error while deleting" });
             }
 
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
+            var oldImagePath = 
+                Path.Combine(_webHostEnvironment.WebRootPath, 
+                productToBeDeleted.ImageUrl.TrimStart('\\'));
 
-            if (productFromDb == null)
+            if (System.IO.File.Exists(oldImagePath))
             {
-                return NotFound();
+                System.IO.File.Delete(oldImagePath);
             }
 
-            _unitOfWork.Product.Remove(productFromDb);
+            _unitOfWork.Product.Remove(productToBeDeleted);
             _unitOfWork.Save();
-            TempData[("success")] = "Product removed successfully!";
 
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Delete Successful" });
         }
+        #endregion
     }
 }
