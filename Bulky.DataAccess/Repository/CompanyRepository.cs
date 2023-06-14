@@ -1,4 +1,5 @@
 ﻿using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bulky.DataAccess.Repository.IRepository
+namespace Bulky.DataAccess.Repository
 {
     internal class CompanyRepository : Repository<Company>, ICompanyRepository
     {

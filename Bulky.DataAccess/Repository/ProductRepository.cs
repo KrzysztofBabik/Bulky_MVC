@@ -1,4 +1,5 @@
 ﻿using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bulky.DataAccess.Repository.IRepository
+namespace Bulky.DataAccess.Repository
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {
@@ -19,7 +20,7 @@ namespace Bulky.DataAccess.Repository.IRepository
         public void Update(Product obj)
         {
             var objFromDb = _db.Products.FirstOrDefault(u => u.Id == obj.Id);
-            if(objFromDb != null)
+            if (objFromDb != null)
             {
                 objFromDb.Title = obj.Title;
                 objFromDb.ISBN = obj.ISBN;
